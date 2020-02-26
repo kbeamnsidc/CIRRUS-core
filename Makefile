@@ -25,20 +25,18 @@ SELF_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 	destroy-cumulus
 
 clean:
-	rm workflows
-	rm daac
-	rm -rf daac-repo
+	rm -rf ${SELF_DIR}/daac-repo
 
 link-daac:
-	ln -s ${DAAC_REPO} ./daac-repo
-	ln -s daac-repo/daac ./daac
-	ln -s daac-repo/workflows ./workflows
+	ln -s ${DAAC_REPO} ${SELF_DIR}/daac-repo
 
 checkout-daac:
-	git clone ${DAAC_REPO} daac-repo
-	cd daac-repo && git fetch && git checkout ${DAAC_REF} && git pull && cd ..
-	ln -s daac-repo/daac ./daac
-	ln -s daac-repo/workflows ./workflows
+	git clone ${DAAC_REPO} ${SELF_DIR}/daac-repo
+	cd ${SELF_DIR}/daac-repo
+	git fetch
+	git checkout ${DAAC_REF}
+	git pull
+	cd ${SELF_DIR}
 
 tf-init:
 	cd tf
@@ -71,7 +69,7 @@ tf: tf-init
 	terraform apply -input=false -auto-approve
 
 daac: daac-init
-	cd $@
+	cd daac-repo/$@
 	if [ -f "variables/${MATURITY}.tfvars" ]
 	then
 		echo "***************************************************************"
@@ -129,8 +127,8 @@ cumulus: cumulus-init
 	fi
 
 workflows: workflows-init
-	cd workflows
-	terraform apply -input=false -auto-approve
+	cd ${SELF_DIR}/daac-repo
+	make all
 
 all: \
 	tf \
