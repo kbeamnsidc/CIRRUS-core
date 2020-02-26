@@ -21,9 +21,7 @@ pipeline {
     stage('Clone and checkout DAAC repo/ref') {
       steps {
         sh "cd ${WORKSPACE}"
-        sh "rm -f ./daac"
-        sh "rm -f ./workflows"
-        sh "rm -rf ./daac-repo"
+        sh "mkdir tmp && mv daac-repo tmp"
         sh "git clone ${env.DAAC_REPO} daac-repo"
         sh "cd daac-repo && git fetch && git checkout ${env.DAAC_REF} && git pull && cd .."
         sh 'tree'
