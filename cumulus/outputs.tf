@@ -47,3 +47,7 @@ output "report_pdrs_sns_topic_arn" {
 output "subnet_ids" {
   value = data.aws_subnet_ids.subnet_ids.ids
 }
+
+output "hello_world_task" {
+  value = module.cumulus.hello_world_task
+}
